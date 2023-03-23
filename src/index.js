@@ -1,10 +1,10 @@
 const express = require('express');
-const readFile = require('./utils/fileRead');
-// const talkers = require('./talker.json');
+const { readFile, tokenGenerator } = require('./utils/fileRead');
 
 const app = express();
 app.use(express.json());
 
+const HTTP_ERROR_STATUS = 404;
 const HTTP_OK_STATUS = 200;
 const PORT = process.env.PORT || '3001';
 
@@ -17,17 +17,22 @@ app.get('/talker', async (_request, response) => {
 });
 
 app.get('/talker/:id', async (request, response) => {
+  // Esse id é um string a principio, deve transformar em number
   const { id } = request.params;
   const leitura = await readFile();
-  const [talkerInfo] = leitura.filter((objInfo) => {
-    if (objInfo.id == id) {
-      return objInfo;
-    }
-  });  
+  const [talkerInfo] = leitura.filter((objInfo) => objInfo.id === +id);
+  // Se a pessoa usuaria nao existir, retorna msg de erro  
   if (!talkerInfo) {
-    return response.status(404).json({ message: 'Pessoa palestrante não encontrada' });    
+    return response.status(HTTP_ERROR_STATUS)
+    .json({ message: 'Pessoa palestrante não encontrada' });    
   }
-  return response.status(200).json(talkerInfo);
+  return response.status(HTTP_OK_STATUS).json(talkerInfo);
+});
+
+app.post('/login', async (request, response) => { 
+  // const { email, password } = request.body;
+  const token = tokenGenerator();
+  return response.status(HTTP_OK_STATUS).json({ token });
 });
 
 // não remova esse endpoint, e para o avaliador funcionar
