@@ -13,17 +13,4 @@ const readFile = async () => {
   }
 };
 
-const tokenGenerator = () => {
-  const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let resultado = '';
-  const SIXTEEN = 16;
-  Array.from({ length: SIXTEEN }).forEach(() => {
-    resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-  });
-  return resultado;
-};
-
-module.exports = {
-  readFile,
-  tokenGenerator,
-};
+module.exports = readFile;
