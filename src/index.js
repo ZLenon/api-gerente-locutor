@@ -1,6 +1,14 @@
 const express = require('express');
-const { readFile, tokenGenerator } = require('./utils');
-const valiData = require('./middlewares');
+const { readFile, tokenGenerator, writeFile } = require('./utils');
+const { 
+  validationForm,
+  validName,
+  validToken,
+  validAge,
+  validTalk,
+  validWatchedAt,
+  validRate,
+ } = require('./middlewares');
 
 const app = express();
 app.use(express.json());
@@ -9,6 +17,7 @@ const HTTP_ERROR_STATUS = 404;
 const HTTP_OK_STATUS = 200;
 const PORT = process.env.PORT || '3001';
 
+// Requisito 1
 app.get('/talker', async (_request, response) => {
   const leitura = await readFile();
   if (leitura.length === 0) {
@@ -17,6 +26,7 @@ app.get('/talker', async (_request, response) => {
   return response.status(HTTP_OK_STATUS).json(leitura);
 });
 
+// Requisito 2
 app.get('/talker/:id', async (request, response) => {
   // Esse id é um string a principio, deve transformar em number
   const { id } = request.params;
@@ -30,10 +40,31 @@ app.get('/talker/:id', async (request, response) => {
   return response.status(HTTP_OK_STATUS).json(talkerInfo);
 });
 
-app.post('/login', valiData, async (request, response) => {  
+// Requisito 3 e 4validationForm
+app.post('/login', validationForm, async (_request, response) => {  
   const token = tokenGenerator();
 
   return response.status(HTTP_OK_STATUS).json({ token });
+});
+
+// Requisito 5
+app.post('/talker',
+  validName,
+  validToken,
+  validAge,
+  validTalk,
+  validWatchedAt,
+  validRate, 
+
+  async (request, response) => {
+  const talker = await readFile();
+  const objTalker = request.body;
+  // inserindo o novo talker no obj talker somando o utimo id +1
+  const newObjTalker = { id: talker.length + 1, ...objTalker };
+  talker.push(newObjTalker);
+  await writeFile(talker);
+  
+  return response.status(201).json(newObjTalker);
 });
 
 // não remova esse endpoint, e para o avaliador funcionar

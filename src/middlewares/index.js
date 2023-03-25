@@ -1,3 +1,17 @@
-const valiData = require('./validation');
+const validationForm = require('./validationForm');
+const validName = require('./validName');
+const validToken = require('./validToken');
+const validAge = require('./validAge');
+const validTalk = require('./validTalk');
+const validWatchedAt = require('./validWatchedAt');
+const validRate = require('./validRate');
 
-module.exports = valiData;
+module.exports = { 
+  validationForm,
+   validName, 
+   validToken,
+   validAge,
+   validTalk,
+   validWatchedAt,
+   validRate,
+  };
