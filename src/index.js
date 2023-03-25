@@ -67,6 +67,32 @@ app.post('/talker',
   return response.status(201).json(newObjTalker);
 });
 
+// Requisito 6
+app.put('/talker/:id',
+  validName,
+  validToken,
+  validAge,
+  validTalk,
+  validWatchedAt,
+  validRate,
+
+  async (request, response) => {
+  const { id } = request.params;
+  const bodyTalker = request.body;
+  const talker = await readFile();
+  const fiteredID = talker.find((tk) => tk.id === +id);
+  if (!fiteredID) {
+    return response.status(HTTP_ERROR_STATUS).json({
+      message: 'Pessoa palestrante não encontrada',
+    });
+  }
+  const index = talker.findIndex((tk) => tk.id === +id);
+  const newObjTalker = { id: +id, ...bodyTalker };
+  talker[index] = newObjTalker;
+  await writeFile(talker);
+  return response.status(200).json(newObjTalker);
+});
+
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
