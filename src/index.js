@@ -93,6 +93,22 @@ app.put('/talker/:id',
   return response.status(200).json(newObjTalker);
 });
 
+// Requisito 7
+app.delete('/talker/:id', validToken, async (request, response) => {
+  const { id } = request.params;
+  const talker = await readFile();
+  const fiteredID = talker.find((tk) => tk.id === +id);
+  if (!fiteredID) {
+    return response.status(HTTP_ERROR_STATUS).json({
+      message: 'Pessoa palestrante não encontrada',
+    });
+  }
+
+  const talkersOBJ = talker.filter((tk) => tk.id !== +id);
+  await writeFile(talkersOBJ);
+  return response.status(204).json();
+});
+
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
