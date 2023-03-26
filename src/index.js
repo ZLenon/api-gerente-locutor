@@ -90,7 +90,7 @@ app.put('/talker/:id',
   const newObjTalker = { id: +id, ...bodyTalker };
   talker[index] = newObjTalker;
   await writeFile(talker);
-  return response.status(200).json(newObjTalker);
+  return response.status(HTTP_OK_STATUS).json(newObjTalker);
 });
 
 // Requisito 7
@@ -103,10 +103,23 @@ app.delete('/talker/:id', validToken, async (request, response) => {
       message: 'Pessoa palestrante não encontrada',
     });
   }
-
+  // encontra atraves do ID todos que nao tem esse ID
   const talkersOBJ = talker.filter((tk) => tk.id !== +id);
+  // sobrescreve o json anterio agora sem o talker ID informado
   await writeFile(talkersOBJ);
   return response.status(204).json();
+});
+
+// requisito 8
+app.get('/talker/search', validToken, async (request, response) => {
+  const queryPass = request.query.q;
+  
+  const talker = await readFile();
+  const fiteredQ = talker.filter(({ name }) => name.includes(queryPass));
+  
+  if (!queryPass) return response.status(HTTP_OK_STATUS).json(talker);
+ 
+  return response.status(HTTP_OK_STATUS).json(fiteredQ);
 });
 
 // não remova esse endpoint, e para o avaliador funcionar
