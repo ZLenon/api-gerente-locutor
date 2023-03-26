@@ -17,6 +17,18 @@ const HTTP_ERROR_STATUS = 404;
 const HTTP_OK_STATUS = 200;
 const PORT = process.env.PORT || '3001';
 
+// requisito 8
+app.get('/talker/search', validToken, async (request, response) => {
+  const queryPass = request.query.q;
+  
+  const talker = await readFile();
+  const fiteredQ = talker.filter(({ name }) => name.includes(queryPass));
+  
+  if (!queryPass) return response.status(HTTP_OK_STATUS).json(talker);
+ 
+  return response.status(HTTP_OK_STATUS).json(fiteredQ);
+});
+
 // Requisito 1
 app.get('/talker', async (_request, response) => {
   const leitura = await readFile();
@@ -108,18 +120,6 @@ app.delete('/talker/:id', validToken, async (request, response) => {
   // sobrescreve o json anterio agora sem o talker ID informado
   await writeFile(talkersOBJ);
   return response.status(204).json();
-});
-
-// requisito 8
-app.get('/talker/search', validToken, async (request, response) => {
-  const queryPass = request.query.q;
-  
-  const talker = await readFile();
-  const fiteredQ = talker.filter(({ name }) => name.includes(queryPass));
-  
-  if (!queryPass) return response.status(HTTP_OK_STATUS).json(talker);
- 
-  return response.status(HTTP_OK_STATUS).json(fiteredQ);
 });
 
 // não remova esse endpoint, e para o avaliador funcionar
