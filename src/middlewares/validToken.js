@@ -1,7 +1,7 @@
 const validToken = (request, response, next) => {
   const { authorization: token } = request.headers;
   const SIXTEEN = 16;
-  if (token === undefined) {
+  if (!token) {
     return response.status(401).json({
       message: 'Token não encontrado',
     });

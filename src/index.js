@@ -3,7 +3,7 @@ const { readFile, tokenGenerator, writeFile,
   filterSearchQ, filterSearchRate, filterSearchDATE } = require('./utils');
 const { 
   validationForm, validName, validToken, validAge, validTalk, validWatchedAt,
-  validWatchedAtQuery, validRate, validRateQuery } = require('./middlewares');
+  validWatchedAtQuery, validRate, validRateQuery, validPatchRate } = require('./middlewares');
 
 const app = express();
 app.use(express.json());
@@ -90,6 +90,23 @@ app.put('/talker/:id', validName, validToken, validAge, validTalk, validWatchedA
   talker[index] = newObjTalker;
   await writeFile(talker);
   return response.status(HTTP_OK_STATUS).json(newObjTalker);
+});
+
+// Requisito 11
+app.patch('/talker/rate/:id', validToken, validPatchRate, async (request, response) => {
+  const { rate } = request.body;
+  const { id } = request.params;
+
+  const talker = await readFile();
+  console.log(talker);
+  const index = talker.findIndex((tk) => tk.id === +id); 
+  
+  talker[index] = { ...talker[index], talk: { ...talker[index].talk, rate } };
+  
+  console.log(talker[index]);
+  
+  await writeFile(talker);
+  return response.status(204).send();
 });
 
 // Requisito 7

@@ -4,7 +4,7 @@ const validToken = require('./validToken');
 const validAge = require('./validAge');
 const validTalk = require('./validTalk');
 const { validWatchedAt, validWatchedAtQuery } = require('./validWatchedAt');
-const { validRate, validRateQuery } = require('./validRate');
+const { validRate, validRateQuery, validPatchRate } = require('./validRate');
 
 module.exports = { 
   validationForm,
@@ -16,4 +16,5 @@ module.exports = {
    validWatchedAtQuery,
    validRateQuery,
    validRate,
+   validPatchRate,
   };

@@ -25,5 +25,18 @@ const validRateQuery = (request, response, next) => {
   }
   return next();
 };
+const validPatchRate = (request, response, next) => {
+  const { rate } = request.body;
 
-module.exports = { validRate, validRateQuery };
+  if (rate === undefined) {
+    return response.status(400).json({
+      message: 'O campo "rate" é obrigatório',
+    });
+  } if (!Number.isInteger(rate) || rate < 1 || rate > 5) {
+    return response.status(400).json({
+      message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
+    });
+  }
+  return next();
+};
+module.exports = { validRate, validRateQuery, validPatchRate };
