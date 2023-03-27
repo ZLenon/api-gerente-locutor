@@ -14,4 +14,18 @@ const validWatchedAt = (request, response, next) => {
   return next();
 };
 
-module.exports = validWatchedAt;
+const validWatchedAtQuery = (request, response, next) => {
+  const { date } = request.query;
+  if (!date) {
+    return next();
+  }
+  const watchedAtREGEX = /^\d{2}\/\d{2}\/\d{4}$/;
+  if (!watchedAtREGEX.test(date)) {
+    return response.status(400).json({
+      message: 'O parâmetro "date" deve ter o formato "dd/mm/aaaa"',
+    });
+  }
+  return next();
+};
+
+module.exports = { validWatchedAt, validWatchedAtQuery };

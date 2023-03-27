@@ -1,14 +1,9 @@
 const express = require('express');
-const { readFile, tokenGenerator, writeFile } = require('./utils');
+const { readFile, tokenGenerator, writeFile,
+  filterSearchQ, filterSearchRate, filterSearchDATE } = require('./utils');
 const { 
-  validationForm,
-  validName,
-  validToken,
-  validAge,
-  validTalk,
-  validWatchedAt,
-  validRate,
- } = require('./middlewares');
+  validationForm, validName, validToken, validAge, validTalk, validWatchedAt,
+  validWatchedAtQuery, validRate, validRateQuery } = require('./middlewares');
 
 const app = express();
 app.use(express.json());
@@ -18,15 +13,20 @@ const HTTP_OK_STATUS = 200;
 const PORT = process.env.PORT || '3001';
 
 // requisito 8
-app.get('/talker/search', validToken, async (request, response) => {
-  const queryPass = request.query.q;
+app.get('/talker/search', validToken, validRateQuery, validWatchedAtQuery, 
+  async (request, response) => {
+  const { q, rate, date } = request.query;  
+  let talker = await readFile();  
   
-  const talker = await readFile();
-  const fiteredQ = talker.filter(({ name }) => name.includes(queryPass));
-  
-  if (!queryPass) return response.status(HTTP_OK_STATUS).json(talker);
- 
-  return response.status(HTTP_OK_STATUS).json(fiteredQ);
+  if (q) {
+    talker = filterSearchQ(q, talker);
+  } if (rate) {
+    talker = filterSearchRate(rate, talker);
+  } if (date) {
+    talker = filterSearchDATE(date, talker);
+  } 
+
+  return response.status(200).json(talker);
 });
 
 // Requisito 1
@@ -60,14 +60,7 @@ app.post('/login', validationForm, async (_request, response) => {
 });
 
 // Requisito 5
-app.post('/talker',
-  validName,
-  validToken,
-  validAge,
-  validTalk,
-  validWatchedAt,
-  validRate, 
-
+app.post('/talker', validName, validToken, validAge, validTalk, validWatchedAt, validRate, 
   async (request, response) => {
   const talker = await readFile();
   const objTalker = request.body;
@@ -80,13 +73,7 @@ app.post('/talker',
 });
 
 // Requisito 6
-app.put('/talker/:id',
-  validName,
-  validToken,
-  validAge,
-  validTalk,
-  validWatchedAt,
-  validRate,
+app.put('/talker/:id', validName, validToken, validAge, validTalk, validWatchedAt, validRate,
 
   async (request, response) => {
   const { id } = request.params;

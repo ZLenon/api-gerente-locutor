@@ -19,4 +19,23 @@ const writeFile = async (newtalker) => {
 
   return newtalker;
 };
-module.exports = { readFile, writeFile };
+
+const filterSearchQ = (query, talkered) => {
+  if (query) {
+    const filteredQ = talkered.filter(({ name }) => name.toLowerCase()
+      .includes(query.toLowerCase()));
+    return filteredQ;
+  }
+};
+const filterSearchRate = (rate, talkered) => {
+  if (rate) {
+    const filteredRate = talkered.filter(({ talk }) => talk.rate === +rate);
+    return filteredRate;
+  }
+}; const filterSearchDATE = (date, talkered) => {
+  if (date) {
+    const filteredDate = talkered.filter(({ talk }) => talk.watchedAt === date);
+    return filteredDate;
+  }
+};
+module.exports = { readFile, writeFile, filterSearchQ, filterSearchRate, filterSearchDATE };

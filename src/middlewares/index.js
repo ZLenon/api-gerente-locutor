@@ -3,8 +3,8 @@ const validName = require('./validName');
 const validToken = require('./validToken');
 const validAge = require('./validAge');
 const validTalk = require('./validTalk');
-const validWatchedAt = require('./validWatchedAt');
-const validRate = require('./validRate');
+const { validWatchedAt, validWatchedAtQuery } = require('./validWatchedAt');
+const { validRate, validRateQuery } = require('./validRate');
 
 module.exports = { 
   validationForm,
@@ -13,5 +13,7 @@ module.exports = {
    validAge,
    validTalk,
    validWatchedAt,
+   validWatchedAtQuery,
+   validRateQuery,
    validRate,
   };
